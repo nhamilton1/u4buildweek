@@ -4,6 +4,7 @@ const express = require('express')
 
 const authRouter = require('./auth/auth-router');
 const userRouter = require('./users/users-router')
+const itemsRouter = require('./items/items-router')
 
 const server = express()
 server.use(express.json())
@@ -13,7 +14,7 @@ server.use(express.json())
 server.use('/api/auth', authRouter)
 server.use('/api/users', userRouter)
 // server.use('/api/markets', marketsRouter)
-// server.use('/api/items', itemsRouter)
+server.use('/api/items', itemsRouter)
 
 
 server.use((err, req, res, next) => { // eslint-disable-line
