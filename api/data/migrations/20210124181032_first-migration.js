@@ -24,6 +24,11 @@ exports.up = async (knex) => {
       items.string('item_name', 64).notNullable()
       items.string('item_description', 300)
       items.decimal('item_price').notNullable()
+      items.integer('market_id')
+           .unsigned()
+           .notNullable()
+           .references('market_id')
+           .inTable('markets')
     })
 
 
