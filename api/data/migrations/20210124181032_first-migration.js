@@ -7,6 +7,18 @@ exports.up = async (knex) => {
       users.timestamps(false, true)
     })
 
+    .createTable('markets', markets => {
+      markets.increments('market_id')
+      markets.string('market_name').notNullable()
+      markets.integer('user_id')
+             .unsigned()
+             .notNullable()
+             .references('user_id')
+             .inTable('users')
+             .onUpdate('RESTRICT')
+             .onDelete('RESTRICT')
+    })
+
     .createTable('items', items => {
       items.increments('item_id')
       items.string('item_name', 64).notNullable()
@@ -14,15 +26,11 @@ exports.up = async (knex) => {
       items.decimal('item_price').notNullable()
     })
 
-    .createTable('markets', markets => {
-      markets.increments('market_id')
-      markets.string('market_name').notNullable().unique()
-    })
 
 }
 
 exports.down = async (knex) => {
-  await knex.schema.dropTableIfExists('markets')
   await knex.schema.dropTableIfExists('items')
+  await knex.schema.dropTableIfExists('markets')
   await knex.schema.dropTableIfExists('users')
 }
