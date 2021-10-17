@@ -86,7 +86,7 @@ Markets:
 | ---- | -----------------| ---------------------------------------------------------------- |
 |[GET]|	/api/markets/	|Returns an array filled with market objects.|
 |[GET]	|/api/markets/:id	|Returns the market object with the specified market_id.|
-|[POST]	|/api/markets/	|Requires: market_name (Must be logged in to add an item)|
+|[POST]	|/api/markets/	|Requires: market_name (Must be logged in to add a market)|
 
 
 [GET] /api/markets/
