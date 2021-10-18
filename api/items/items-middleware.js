@@ -1,5 +1,7 @@
 const Items = require('./items-model')
 const yup = require('yup')
+const jwt_decoded = require('jwt-decode')
+
 
 const validateItemId = async (req, res, next) => {
     try {
@@ -21,7 +23,8 @@ const validateItemId = async (req, res, next) => {
 const itemSchema = yup.object().shape({
     item_description: yup
         .string()
-        .trim(),
+        .trim()
+        .max(300),
     item_name: yup
         .string()
         .trim()
@@ -47,8 +50,27 @@ const validateItemPayload = async (req, res, next) => {
     }
 }
 
+const matchedMarketId = async (req, res, next) => {
+    try {
+        const token = req.headers.authorization
+        const decoded = jwt_decoded(token)
+        const itemIdCheck = await Items.findById(req.params.id)
+        if (itemIdCheck.market_id === decoded.subject) {
+            next()
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: `Market ${decoded.subject} ID does not match`
+            })
+        }
+    } catch (err) {
+        next(err)
+    }
+}
+
 
 module.exports = {
     validateItemId,
     validateItemPayload,
+    matchedMarketId
 }

@@ -1,6 +1,10 @@
 const router = require('express').Router()
 const Items = require('./items-model')
-const { validateItemId, validateItemPayload } = require('./items-middleware')
+const { 
+    validateItemId, 
+    validateItemPayload, 
+    matchedMarketId 
+} = require('./items-middleware')
 const restrict = require('../auth/restricted')
 const jwt_decoded = require('jwt-decode')
 
@@ -18,8 +22,8 @@ router.get('/:id', validateItemId, (req, res) => {
 })
 
 router.post('/', 
+restrict,
 validateItemPayload, 
-restrict, 
     async (req, res, next) => {
     try {
         const token = req.headers.authorization
@@ -39,7 +43,8 @@ restrict,
 router.put('/:id', 
 restrict,
 validateItemId, 
-validateItemPayload,  
+validateItemPayload, 
+matchedMarketId, 
 async (req, res, next) => {
     try {
         const token = req.headers.authorization
@@ -52,6 +57,20 @@ async (req, res, next) => {
             item_id: req.params.id
         }, req.params.id)
         res.json(updatedItem)
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.delete('/:id', 
+restrict, 
+validateItemPayload, 
+validateItemId, 
+matchedMarketId, 
+async (req, res, next) => {
+    try {
+        await Items.deleteById(req.params.id)
+        res.json(req.item)
     } catch (err) {
         next(err)
     }

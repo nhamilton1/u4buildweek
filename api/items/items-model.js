@@ -15,6 +15,13 @@ const findById = (item_id) => {
     .first()
 }
 
+const findByMarketId = (market_id) => {
+    return db('items')
+    .select('*')
+    .where('market_id', market_id)
+    .first()
+}
+
 const update = async (changes, item_id) => {
   const [UpdatedItemObject] = await db('items')
   .update(changes, ['item_id', 'item_name', 'item_description', 'item_price'])
@@ -29,10 +36,16 @@ const add = async (item) => {
     return newItemObject 
 }
 
+const deleteById = item_id => {
+    return db('items').where('item_id', item_id).del()
+}
+
 module.exports = {
     find,
     findById,
     findBy,
     add,
-    update
+    update,
+    deleteById,
+    findByMarketId
 }
