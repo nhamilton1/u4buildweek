@@ -64,7 +64,6 @@ async (req, res, next) => {
 
 router.delete('/:id', 
 restrict, 
-validateItemPayload, 
 validateItemId, 
 matchedMarketId, 
 async (req, res, next) => {

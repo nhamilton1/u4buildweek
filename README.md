@@ -18,7 +18,6 @@ users:
 (All seeded user passwords should be 123)
 
 Authentication:
-
 |Method|       URL	      |                       Description                                |
 | ---- | -----------------| ---------------------------------------------------------------- |
 |[POST]|/api/auth/register|	Requires a username, password, market_name. Registers a new user.|
@@ -40,7 +39,9 @@ items:
 |[GET]|	/api/items/|	Returns an array filled with item objects.|
 |[GET]|	/api/items/:id|	Returns the item object with the specified item_id.|
 |[POST]|	/api/items/	|Requires: item_name, item_description, item_price (Must be logged in to add an item)|
-
+|[PUT]|	/api/items/:id	|Requires: item_name, item_description, item_price (Must be logged in to edit an item)|
+|[DELETE]|	/api/items/:id	|Requires: Must be valid id (Must be logged in to Delete an item)|
+(only the market who posted the item can edit/delete it)
 
 [GET] /api/items
 ```
