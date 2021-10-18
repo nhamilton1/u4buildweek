@@ -44,13 +44,13 @@ async (req, res, next) => {
     try {
         const token = req.headers.authorization
         const decoded = jwt_decoded(token)
-        const updatedItem = await Items.update(req.params.id, {
+        const updatedItem = await Items.update({
             market_id: decoded.subject,
             item_name: req.body.item_name,
             item_description: req.body.item_description,
             item_price: req.body.item_price,
             item_id: req.params.id
-        })
+        }, req.params.id)
         res.json(updatedItem)
     } catch (err) {
         next(err)

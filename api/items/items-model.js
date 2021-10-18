@@ -17,7 +17,7 @@ const findById = (item_id) => {
 
 const update = async (changes, item_id) => {
   const [UpdatedItemObject] = await db('items')
-  .update(changes, ['item_id', 'item_description', 'item_price'])
+  .update(changes, ['item_id', 'item_name', 'item_description', 'item_price'])
   .where('item_id', item_id) // problem is here with update item
   return UpdatedItemObject
 }
