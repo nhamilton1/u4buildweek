@@ -20,9 +20,11 @@ const validateItemId = async (req, res, next) => {
 
 const itemSchema = yup.object().shape({
     item_description: yup
-        .string(),
+        .string()
+        .trim(),
     item_name: yup
         .string()
+        .trim()
         .max(300)
         .required('Item name is required'),
     item_price: yup

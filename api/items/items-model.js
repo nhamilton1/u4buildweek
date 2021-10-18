@@ -15,11 +15,18 @@ const findById = (item_id) => {
     .first()
 }
 
+const update = async (changes, item_id) => {
+  const [UpdatedItemObject] = await db('items')
+  .update(changes, ['item_id', 'item_description', 'item_price'])
+  .where('item_id', item_id) // problem is here with update item
+  return UpdatedItemObject
+}
+
 
 const add = async (item) => {
-    const [newUserObject] = await db('items')
+    const [newItemObject] = await db('items')
         .insert(item, ['item_id', 'item_name', 'item_description', 'item_price'])
-    return newUserObject 
+    return newItemObject 
 }
 
 module.exports = {
@@ -27,4 +34,5 @@ module.exports = {
     findById,
     findBy,
     add,
+    update
 }

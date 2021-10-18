@@ -18,8 +18,8 @@ router.get('/:id', validateItemId, (req, res) => {
 })
 
 router.post('/', 
-    validateItemPayload, 
-    restrict, 
+validateItemPayload, 
+restrict, 
     async (req, res, next) => {
     try {
         const token = req.headers.authorization
@@ -31,6 +31,27 @@ router.post('/',
             item_price: req.body.item_price
         })
         res.json(newItem)
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.put('/:id', 
+restrict,
+validateItemId, 
+validateItemPayload,  
+async (req, res, next) => {
+    try {
+        const token = req.headers.authorization
+        const decoded = jwt_decoded(token)
+        const updatedItem = await Items.update(req.params.id, {
+            market_id: decoded.subject,
+            item_name: req.body.item_name,
+            item_description: req.body.item_description,
+            item_price: req.body.item_price,
+            item_id: req.params.id
+        })
+        res.json(updatedItem)
     } catch (err) {
         next(err)
     }
