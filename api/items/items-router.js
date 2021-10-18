@@ -47,7 +47,8 @@ router.put('/:id',
 restrict,
 validateItemId, 
 validateItemPayload, 
-validMarket, 
+validMarket,
+checkMarketId, 
 async (req, res, next) => {
     try {
         const token = req.headers.authorization
@@ -69,6 +70,7 @@ async (req, res, next) => {
 router.delete('/:id', 
 restrict, 
 validateItemId, 
+validMarket,
 checkMarketId, 
 async (req, res, next) => {
     try {
