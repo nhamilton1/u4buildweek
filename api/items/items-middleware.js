@@ -50,17 +50,17 @@ const validateItemPayload = async (req, res, next) => {
     }
 }
 
-const matchedMarketId = async (req, res, next) => {
+const validMarket = async (req, res, next) => {
     try {
         const token = req.headers.authorization
         const decoded = jwt_decoded(token)
-        const itemIdCheck = await Items.findById(req.params.id)
-        if (itemIdCheck.market_id === decoded.subject) {
+        const marketCheck = await Items.findByMarketId(decoded.subject)
+        if (marketCheck) {
             next()
         } else {
             res.status(404).json({
                 status: 404,
-                message: `Market ${decoded.subject} ID does not match`
+                message: `${decoded.username} does not have a market, you need a market to post an item.`
             })
         }
     } catch (err) {
@@ -72,5 +72,5 @@ const matchedMarketId = async (req, res, next) => {
 module.exports = {
     validateItemId,
     validateItemPayload,
-    matchedMarketId
+    validMarket
 }

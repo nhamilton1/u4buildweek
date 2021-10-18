@@ -16,16 +16,16 @@ const findById = (item_id) => {
 }
 
 const findByMarketId = (market_id) => {
-    return db('items')
+    return db('markets')
     .select('*')
-    .where('market_id', market_id)
+    .where('user_id', market_id)
     .first()
 }
 
 const update = async (changes, item_id) => {
   const [UpdatedItemObject] = await db('items')
   .update(changes, ['item_id', 'item_name', 'item_description', 'item_price'])
-  .where('item_id', item_id) // problem is here with update item
+  .where('item_id', item_id)
   return UpdatedItemObject
 }
 
