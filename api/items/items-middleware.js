@@ -68,9 +68,29 @@ const validMarket = async (req, res, next) => {
     }
 }
 
+const checkMarketId = async (req, res, next) => {
+    try {
+        const token = req.headers.authorization
+        const decoded = jwt_decoded(token)
+        const itemIdCheck = await Items.findById(req.params.id)
+        const marketCheck = await Items.findByMarketId(decoded.subject)
+        if (itemIdCheck.market_id !== marketCheck.market_id) {
+            res.status(404).json({
+                status: 404,
+                message: `Item ${req.params.id} can only be deleted by the market that posted ${itemIdCheck.item_name} .`
+            })
+        } else {
+            next()
+        }
+    } catch (err) {
+        next(err)
+    }
+}
+
 
 module.exports = {
     validateItemId,
     validateItemPayload,
-    validMarket
+    validMarket,
+    checkMarketId
 }

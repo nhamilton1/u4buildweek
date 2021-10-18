@@ -3,7 +3,8 @@ const Items = require('./items-model')
 const { 
     validateItemId, 
     validateItemPayload, 
-    validMarket 
+    validMarket,
+    checkMarketId
 } = require('./items-middleware')
 const restrict = require('../auth/restricted')
 const jwt_decoded = require('jwt-decode')
@@ -68,7 +69,7 @@ async (req, res, next) => {
 router.delete('/:id', 
 restrict, 
 validateItemId, 
-validMarket, 
+checkMarketId, 
 async (req, res, next) => {
     try {
         await Items.deleteById(req.params.id)
