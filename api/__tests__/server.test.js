@@ -237,7 +237,7 @@ describe('[POST] /api/markets', () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     res = await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
-    expect(res.body).toMatchObject({market_id: 6, market_name: "testing", user_id: 6})
+    expect(res.body).toMatchObject({ market_id: 6, market_name: "testing", user_id: 6 })
 
   })
 
@@ -247,6 +247,34 @@ describe('[POST] /api/markets', () => {
     await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
     const testing = await db('markets')
     expect(testing).toHaveLength(6)
+  })
+
+})
+
+describe('[POST] /api/items', () => {
+
+  test('must have a market to post a new item', async () => {
+    await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
+    let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
+    res = await request(server).post('/api/items').set('Authorization', res.body.token).send({ item_name: 'Sushi', item_description: 'Tuna Roll', item_price: 6, })
+    expect(res.body).toMatchObject({ message: 'bobe does not have a market, you need a market to post an item.', status: 404 })
+  })
+
+  test('responds a newly created item', async () => {
+    await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
+    let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
+    await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
+    res = await request(server).post('/api/items').set('Authorization', res.body.token).send({ item_name: 'Sushi', item_description: 'Tuna Roll', item_price: 6, })
+    expect(res.body).toMatchObject({ item_name: 'Sushi', item_description: 'Tuna Roll', item_price: "6.00", })
+  })
+
+  test('should contain the correct number of items', async () => {
+    await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
+    let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
+    await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
+    await request(server).post('/api/items').set('Authorization', res.body.token).send({ item_name: 'Sushi', item_description: 'Tuna Roll', item_price: 6, })
+    const testing = await db('items')
+    expect(testing).toHaveLength(49)
   })
 
 })
