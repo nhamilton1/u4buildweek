@@ -230,3 +230,23 @@ describe('[GET] /markets/:id', () => {
   })
 
 })
+
+describe('[POST] /api/markets', () => {
+
+  test('responds a newly created market', async () => {
+    await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
+    let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
+    res = await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
+    expect(res.body).toMatchObject({market_id: 6, market_name: "testing", user_id: 6})
+
+  })
+
+  test('should contain the correct number of markets', async () => {
+    await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
+    let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
+    await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
+    const testing = await db('markets')
+    expect(testing).toHaveLength(6)
+  })
+
+})
