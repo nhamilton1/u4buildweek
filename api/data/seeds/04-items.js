@@ -49,6 +49,8 @@ const items = [
 {market_id: 2, item_name:"Wine - White, Riesling, Semi - Dry",item_description:"Aliquam non mauris. Morbi non lectus.",item_price:"45.02"},
 ]
 
+exports.items = items
+
 exports.seed = function(knex) {
   return knex('items').insert(items)
 };

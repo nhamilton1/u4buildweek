@@ -6,8 +6,6 @@ const findAll = () => {
         .select('u.username', 'm.market_name', 'm.market_id')
 }
 
-
-
 const findById = async (market_id) => {
     const rows = await db('markets as m')
         .leftJoin('users as u', 'u.user_id', 'm.user_id')

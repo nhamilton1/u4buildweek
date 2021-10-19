@@ -6,6 +6,7 @@ const markets = [
   {user_id: 5, market_name:"Solarbreeze"},
 ]
 
+exports.markets = markets
 
 exports.seed = function(knex) {
   return knex('markets').insert(markets)

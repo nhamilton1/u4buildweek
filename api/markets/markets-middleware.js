@@ -1,23 +1,51 @@
 const Markets = require('./markets-model')
 const jwt_decoded = require('jwt-decode')
+const yup = require('yup')
+
+const marketSchema = yup.object().shape({
+    market_name: yup
+        .string()
+        .trim()
+        .max(150)
+        .strict()
+        .min(3, 'Must be at least three characters long')
+        .required('market name is required')
+})
+
+const validateMarketPayload = async (req, res, next) => {
+    try {
+        const validatedAction = await marketSchema.validate(
+            req.body,
+            { strict: false, stripUnknown: true }
+        )
+        req.action = validatedAction
+        next()
+    } catch (err) {
+        res.status(400).json({
+            message: err.message
+        })
+    }
+}
+
 
 
 async function validateMarketId(req, res, next) {
     try {
-        const marketIdCheck = await Markets.findById(req.params.id)
+        const marketIdCheck = await Markets.findById(req.params.id) 
         if (marketIdCheck) {
             req.market = marketIdCheck
             next()
         } else {
             res.status(404).json({
                 status: 404,
-                message: `User ${req.params.id} does not exist`
+                message: `Market ${req.params.id} does not exist`
             })
         }
     } catch (err) {
         next(err)
     }
 }
+
 
 const matchedUserId = async (req, res, next) => {
     try {
@@ -39,5 +67,6 @@ const matchedUserId = async (req, res, next) => {
 
 module.exports = {
     validateMarketId,
-    matchedUserId
+    matchedUserId,
+    validateMarketPayload,
 }
