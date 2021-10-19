@@ -60,7 +60,7 @@ const validMarket = async (req, res, next) => {
         } else {
             res.status(404).json({
                 status: 404,
-                message: `${decoded.username} does not have a market, you need a market to post an item.`
+                message: `${decoded.username} does not have a market, you need a market to post/delete an item.`
             })
         }
     } catch (err) {
