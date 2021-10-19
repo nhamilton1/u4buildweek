@@ -6,6 +6,13 @@ const findAll = () => {
         .select('u.username', 'm.market_name', 'm.market_id')
 }
 
+function findBy(filter) {
+    return db('markets as m')
+        .leftJoin('users as u', 'u.user_id', 'm.user_id')
+        .select('u.username', 'm.market_name', 'm.market_id')
+        .where('market_name', filter)
+}
+
 const findById = async (market_id) => {
     const rows = await db('markets as m')
         .leftJoin('users as u', 'u.user_id', 'm.user_id')
@@ -49,4 +56,5 @@ module.exports = {
     findAll,
     add,
     findById,
+    findBy,
 }

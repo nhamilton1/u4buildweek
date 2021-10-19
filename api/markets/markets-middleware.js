@@ -27,6 +27,21 @@ const validateMarketPayload = async (req, res, next) => {
     }
 }
 
+async function uniqueMarketName(req, res, next) {
+    try {
+        const uniqueMarket = await Markets.findBy(req.body.market_name) 
+        if (uniqueMarket.length > 0) {
+            res.status(404).json({
+                status: 404,
+                message: `Market name: ${req.body.market_name} already exists`
+            })
+        } else {
+            next()
+        }
+    } catch (err) {
+        next(err)
+    }
+}
 
 
 async function validateMarketId(req, res, next) {
@@ -69,4 +84,5 @@ module.exports = {
     validateMarketId,
     matchedUserId,
     validateMarketPayload,
+    uniqueMarketName
 }

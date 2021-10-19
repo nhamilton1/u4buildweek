@@ -1,7 +1,11 @@
 const router = require('express').Router()
 const Markets = require('./markets-model')
 const restrict = require('../auth/restricted')
-const { validateMarketId, validateMarketPayload } = require('./markets-middleware')
+const { 
+    validateMarketId, 
+    validateMarketPayload,
+    uniqueMarketName,
+} = require('./markets-middleware')
 const jwt_decoded = require('jwt-decode')
 
 router.get('/', async (req, res, next) => {
@@ -17,7 +21,11 @@ router.get('/:id', validateMarketId, (req, res) => {
     res.status(200).json(req.market)
 })
 
-router.post('/', restrict, validateMarketPayload, async (req, res, next) => {
+router.post('/', 
+restrict, 
+validateMarketPayload, 
+uniqueMarketName, 
+async (req, res, next) => {
     try {
         const token = req.headers.authorization
         const decoded = jwt_decoded(token)
