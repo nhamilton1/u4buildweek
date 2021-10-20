@@ -28,21 +28,25 @@ const findById = async (market_id) => {
         )
         .where('m.market_id', market_id)
 
-    const market_items = {
-        username: rows[0].username,
-        market_name: rows[0].market_name,
-        market_id: rows[0].market_id,
-        items: rows[0].item_id
-            ?
-            rows.map(item => ({
-                item_id: item.item_id,
-                item_name: item.item_name,
-                item_description: item.item_description,
-                item_price: item.item_price
-            })) : []
+    if (rows.length === 0) {
+        return undefined
+    } else {
+        const market_items = {
+            username: rows[0].username,
+            market_name: rows[0].market_name,
+            market_id: rows[0].market_id,
+            items: rows[0].item_id
+                ?
+                rows.map(item => ({
+                    item_id: item.item_id,
+                    item_name: item.item_name,
+                    item_description: item.item_description,
+                    item_price: item.item_price
+                })) : []
+        }
+        return market_items
     }
 
-    return market_items
 }
 
 const findMarketByUserId = async (user_id) => {

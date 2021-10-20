@@ -29,7 +29,7 @@ const validateMarketPayload = async (req, res, next) => {
 
 async function uniqueMarketName(req, res, next) {
     try {
-        const uniqueMarket = await Markets.findBy(req.body.market_name) 
+        const uniqueMarket = await Markets.findBy(req.body.market_name)
         if (uniqueMarket.length > 0) {
             res.status(404).json({
                 status: 404,
@@ -46,7 +46,7 @@ async function uniqueMarketName(req, res, next) {
 
 async function validateMarketId(req, res, next) {
     try {
-        const marketIdCheck = await Markets.findById(req.params.id) 
+        const marketIdCheck = await Markets.findById(req.params.id)
         if (marketIdCheck) {
             req.market = marketIdCheck
             next()
@@ -85,7 +85,7 @@ const userAlreadyHasMarket = async (req, res, next) => {
         const token = req.headers.authorization
         const decoded = jwt_decoded(token)
         const userAlreadyHasMarket = await Markets.findMarketByUserId(decoded.subject)
-        if(userAlreadyHasMarket) {
+        if (userAlreadyHasMarket) {
             res.status(404).json({
                 status: 404,
                 message: `User ${decoded.subject} already has a market`
