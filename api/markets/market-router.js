@@ -5,6 +5,7 @@ const {
     validateMarketId, 
     validateMarketPayload,
     uniqueMarketName,
+    userAlreadyHasMarket,
 } = require('./markets-middleware')
 const jwt_decoded = require('jwt-decode')
 
@@ -25,6 +26,7 @@ router.post('/',
 restrict, 
 validateMarketPayload, 
 uniqueMarketName, 
+userAlreadyHasMarket,
 async (req, res, next) => {
     try {
         const token = req.headers.authorization

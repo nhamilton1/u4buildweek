@@ -80,9 +80,29 @@ const matchedUserId = async (req, res, next) => {
     }
 }
 
+const userAlreadyHasMarket = async (req, res, next) => {
+    try {
+        const token = req.headers.authorization
+        const decoded = jwt_decoded(token)
+        const userAlreadyHasMarket = await Markets.findMarketByUserId(decoded.subject)
+        if(userAlreadyHasMarket) {
+            res.status(404).json({
+                status: 404,
+                message: `User ${decoded.subject} already has a market`
+            })
+        } else {
+            next()
+        }
+    } catch (err) {
+        next(err)
+    }
+}
+
+
 module.exports = {
     validateMarketId,
     matchedUserId,
     validateMarketPayload,
-    uniqueMarketName
+    uniqueMarketName,
+    userAlreadyHasMarket
 }

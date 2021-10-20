@@ -29,6 +29,8 @@ exports.up = async (knex) => {
            .notNullable()
            .references('market_id')
            .inTable('markets')
+           .onUpdate('RESTRICT')
+           .onDelete('RESTRICT')
     })
 
 

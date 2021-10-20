@@ -45,6 +45,13 @@ const findById = async (market_id) => {
     return market_items
 }
 
+const findMarketByUserId = async (user_id) => {
+    return db('markets as m')
+    .leftJoin('users as u', 'u.user_id', 'm.user_id')
+    .select('u.username', 'm.market_name', 'm.market_id')
+    .where('u.user_id', user_id)
+    .first()
+}
 
 
 const add = async (market) => {
@@ -57,4 +64,5 @@ module.exports = {
     add,
     findById,
     findBy,
+    findMarketByUserId,
 }
