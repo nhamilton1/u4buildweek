@@ -28,11 +28,11 @@ describe('[POST] /api/auth/register', () => {
     })
   })
 
-  test('responds with 201', async () => {
+  test('[1] responds with 201', async () => {
     expect(res.status).toBe(201)
   })
 
-  test('should contain newly created user', async () => {
+  test('[2] should contain newly created user', async () => {
     const bob = await db('users')
     expect(bob).toHaveLength(6)
   })
@@ -48,16 +48,16 @@ describe('[POST] /api/auth/login', () => {
     })
   })
 
-  test('responds with the correct message on invalid credentials', async () => {
+  test('[3] responds with the correct message on invalid credentials', async () => {
     const res = await request(server).post('/api/auth/login').send({ username: 'Bob', password: '1234' })
     expect(res.body.message).toMatch(/invalid credentials/i)
   })
 
-  test('should give welcome message', async () => {
+  test('[4] should give welcome message', async () => {
     expect(res.body.message).toContain("Welcome, Test")
   })
 
-  test('responds with a token', async () => {
+  test('[5] responds with a token', async () => {
     let decoded = jwt_decoded(res.body.token)
     expect(decoded).toHaveProperty('exp')
     expect(decoded).toHaveProperty('iat')
@@ -70,11 +70,11 @@ describe('[GET] /users', () => {
     res = await request(server).get('/api/users')
   })
 
-  test('responds with 200', async () => {
+  test('[6] responds with 200', async () => {
     expect(res.status).toBe(200)
   })
 
-  test('can get the correct number of users', async () => {
+  test('[7] can get the correct number of users', async () => {
     expect(res.body).toHaveLength(users.length)
   })
 
@@ -82,17 +82,17 @@ describe('[GET] /users', () => {
 
 describe('[GET] /users/:id', () => {
 
-  test('responds with 200', async () => {
+  test('[8] responds with 200', async () => {
     let res = await request(server).get('/api/users/1')
     expect(res.status).toBe(200)
   })
 
-  test('can get the correct user', async () => {
+  test('[9] can get the correct user', async () => {
     let res = await request(server).get('/api/users/1')
     expect(res.body).toMatchObject({ user_id: 1, username: "Test" })
   })
 
-  test('error message if no user found', async () => {
+  test('[10] error message if no user found', async () => {
     let res = await request(server).get('/api/users/2222')
     expect(res.body).toMatchObject({ message: 'User 2222 does not exist', status: 404 })
   })
@@ -106,11 +106,11 @@ describe('[GET] /markets', () => {
     res = await request(server).get('/api/markets')
   })
 
-  test('responds with 200', async () => {
+  test('[11] responds with 200', async () => {
     expect(res.status).toBe(200)
   })
 
-  test('can get the correct number of markets', async () => {
+  test('[12] can get the correct number of markets', async () => {
     expect(res.body).toHaveLength(markets.length)
   })
 
@@ -122,11 +122,11 @@ describe('[GET] /items', () => {
     res = await request(server).get('/api/items')
   })
 
-  test('responds with 200', async () => {
+  test('[13] responds with 200', async () => {
     expect(res.status).toBe(200)
   })
 
-  test('can get the correct number of items', async () => {
+  test('[14] can get the correct number of items', async () => {
     expect(res.body).toHaveLength(items.length)
   })
 
@@ -134,12 +134,12 @@ describe('[GET] /items', () => {
 
 describe('[GET] /items/:id', () => {
 
-  test('responds with 200', async () => {
+  test('[15] responds with 200', async () => {
     let res = await request(server).get('/api/items/1')
     expect(res.status).toBe(200)
   })
 
-  test('can get the correct user', async () => {
+  test('[16] can get the correct user', async () => {
     let res = await request(server).get('/api/items/1')
     expect(res.body).toMatchObject({
       item_description: "Nulla justo.",
@@ -150,7 +150,7 @@ describe('[GET] /items/:id', () => {
     })
   })
 
-  test('error message if no user found', async () => {
+  test('[17] error message if no user found', async () => {
     let res = await request(server).get('/api/items/2222')
     expect(res.body).toMatchObject({ message: 'Item 2222 does not exist', status: 404 })
   })
@@ -160,12 +160,12 @@ describe('[GET] /items/:id', () => {
 
 describe('[GET] /markets/:id', () => {
 
-  test('responds with 200', async () => {
+  test('[18] responds with 200', async () => {
     let res = await request(server).get('/api/markets/1')
     expect(res.status).toBe(200)
   })
 
-  test('can get the correct market', async () => {
+  test('[19] can get the correct market', async () => {
     let res = await request(server).get('/api/markets/1')
     expect(res.body).toMatchObject({
       items: [
@@ -224,23 +224,23 @@ describe('[GET] /markets/:id', () => {
     })
   })
 
-  test('error message if no user found', async () => {
+  test('[20] error message if no user found', async () => {
     let res = await request(server).get('/api/markets/2222')
-    expect(res.body).toMatchObject({ message: "Cannot read properties of undefined (reading 'username')" })
+    expect(res.body).toMatchObject({ message: "Market 2222 does not exist" })
   })
 
 })
 
 describe('[POST] /api/markets', () => {
 
-  test('responds a newly created market', async () => {
+  test('[21] responds a newly created market', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     res = await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
     expect(res.body).toMatchObject({ market_id: 6, market_name: "testing", user_id: 6 })
   })
 
-  test('should contain the correct number of markets', async () => {
+  test('[22] should contain the correct number of markets', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
@@ -248,7 +248,7 @@ describe('[POST] /api/markets', () => {
     expect(testing).toHaveLength(6)
   })
 
-  test('responds with error message, already existing market', async () => {
+  test('[23] responds with error message, already existing market', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
@@ -260,14 +260,14 @@ describe('[POST] /api/markets', () => {
 
 describe('[POST] /api/items', () => {
 
-  test('must have a market to post a new item', async () => {
+  test('[24] must have a market to post a new item', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     res = await request(server).post('/api/items').set('Authorization', res.body.token).send({ item_name: 'Sushi', item_description: 'Tuna Roll', item_price: 6, })
     expect(res.body).toMatchObject({ message: 'bobe does not have a market, you need a market to post/delete an item.', status: 404 })
   })
 
-  test('responds a newly created item', async () => {
+  test('[25] responds a newly created item', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
@@ -275,7 +275,7 @@ describe('[POST] /api/items', () => {
     expect(res.body).toMatchObject({ item_name: 'Sushi', item_description: 'Tuna Roll', item_price: "6.00", })
   })
 
-  test('should contain the correct number of items', async () => {
+  test('[26] should contain the correct number of items', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
@@ -288,7 +288,7 @@ describe('[POST] /api/items', () => {
 
 describe('[PUT] /api/items/1', () => {
 
-  test('must be the market that posted the item to edit the item', async () => {
+  test('[27] must be the market that posted the item to edit the item', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
@@ -296,13 +296,13 @@ describe('[PUT] /api/items/1', () => {
     expect(res.body).toMatchObject({ message: "Item 1 can only be deleted by the market that posted Beans - Butter Lrg Lima .", status: 404 })
   })
 
-  test('able to edit item the market posted', async () => {
+  test('[28] able to edit item the market posted', async () => {
     let res = await request(server).post('/api/auth/login').send({ username: 'Test', password: '123' })
     res = await request(server).put('/api/items/1').set('Authorization', res.body.token).send({ item_name: 'Sushi', item_description: 'Philadelphia Roll', item_price: 6, })
     expect(res.body).toMatchObject({ item_description: "Philadelphia Roll", item_id: 1, item_name: "Sushi", item_price: "6.00" })
   })
 
-  test('able to delete item the market posted', async () => {
+  test('[29] able to delete item the market posted', async () => {
     let res = await request(server).post('/api/auth/login').send({ username: 'Test', password: '123' })
     res = await request(server).delete('/api/items/1').set('Authorization', res.body.token)
     expect(res.body).toMatchObject({ item_id: 1, item_name: "Beans - Butter Lrg Lima", item_description: "Nulla justo.", item_price: "10.38", market_id: 1 })
@@ -316,7 +316,7 @@ describe('[PUT] /api/items/1', () => {
 
 describe('[DELETE] /api/items/1', () => {
 
-  test('able to delete item the market posted', async () => {
+  test('[30] able to delete item the market posted', async () => {
     let res = await request(server).post('/api/auth/login').send({ username: 'Test', password: '123' })
     res = await request(server).delete('/api/items/1').set('Authorization', res.body.token)
     expect(res.body).toMatchObject({ item_id: 1, item_name: "Beans - Butter Lrg Lima", item_description: "Nulla justo.", item_price: "10.38", market_id: 1 })
@@ -325,7 +325,7 @@ describe('[DELETE] /api/items/1', () => {
     expect(items).not.toBeDefined()
   })
 
-  test('must be the market that posted the item to delete the item', async () => {
+  test('[31] must be the market that posted the item to delete the item', async () => {
     let res = await request(server).post('/api/auth/login').send({ username: 'Test', password: '123' })
     res = await request(server).delete('/api/items/23').set('Authorization', res.body.token)
     expect(res.body).toMatchObject({ message: "Item 23 can only be deleted by the market that posted Celery .", status: 404 })
@@ -334,7 +334,7 @@ describe('[DELETE] /api/items/1', () => {
     expect(items).toBeDefined()
   })
 
-  test('token is required to delete', async () => {
+  test('[32] token is required to delete', async () => {
     let res = await request(server).delete('/api/items/23')
     expect(res.body).toMatchObject({ message: "token required" })
 
