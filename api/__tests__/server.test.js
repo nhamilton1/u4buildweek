@@ -256,18 +256,26 @@ describe('[POST] /api/markets', () => {
     expect(res.body).toMatchObject({ message: "Market name: testing already exists", status: 404 })
   })
 
+  test('[24] responds with error message, Only one market per user', async () => {
+    await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
+    let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
+    await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
+    res = await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'test' })
+    expect(res.body).toMatchObject({ message: "User 6 already has a market", status: 404 })
+  })
+
 })
 
 describe('[POST] /api/items', () => {
 
-  test('[24] must have a market to post a new item', async () => {
+  test('[25] must have a market to post a new item', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     res = await request(server).post('/api/items').set('Authorization', res.body.token).send({ item_name: 'Sushi', item_description: 'Tuna Roll', item_price: 6, })
     expect(res.body).toMatchObject({ message: 'bobe does not have a market, you need a market to post/delete an item.', status: 404 })
   })
 
-  test('[25] responds a newly created item', async () => {
+  test('[26] responds a newly created item', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
@@ -275,7 +283,7 @@ describe('[POST] /api/items', () => {
     expect(res.body).toMatchObject({ item_name: 'Sushi', item_description: 'Tuna Roll', item_price: "6.00", })
   })
 
-  test('[26] should contain the correct number of items', async () => {
+  test('[27] should contain the correct number of items', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
@@ -288,7 +296,7 @@ describe('[POST] /api/items', () => {
 
 describe('[PUT] /api/items/1', () => {
 
-  test('[27] must be the market that posted the item to edit the item', async () => {
+  test('[28] must be the market that posted the item to edit the item', async () => {
     await request(server).post('/api/auth/register').send({ username: 'bobe', password: '1234' })
     let res = await request(server).post('/api/auth/login').send({ username: 'bobe', password: '1234' })
     await request(server).post('/api/markets').set('Authorization', res.body.token).send({ market_name: 'testing' })
@@ -296,27 +304,22 @@ describe('[PUT] /api/items/1', () => {
     expect(res.body).toMatchObject({ message: "Item 1 can only be deleted by the market that posted Beans - Butter Lrg Lima .", status: 404 })
   })
 
-  test('[28] able to edit item the market posted', async () => {
+  test('[29] able to edit item the market posted', async () => {
     let res = await request(server).post('/api/auth/login').send({ username: 'Test', password: '123' })
     res = await request(server).put('/api/items/1').set('Authorization', res.body.token).send({ item_name: 'Sushi', item_description: 'Philadelphia Roll', item_price: 6, })
     expect(res.body).toMatchObject({ item_description: "Philadelphia Roll", item_id: 1, item_name: "Sushi", item_price: "6.00" })
   })
 
-  test('[29] able to delete item the market posted', async () => {
-    let res = await request(server).post('/api/auth/login').send({ username: 'Test', password: '123' })
-    res = await request(server).delete('/api/items/1').set('Authorization', res.body.token)
-    expect(res.body).toMatchObject({ item_id: 1, item_name: "Beans - Butter Lrg Lima", item_description: "Nulla justo.", item_price: "10.38", market_id: 1 })
-
-    const items = await db('items').where('item_id', 1).first()
-    expect(items).not.toBeDefined()
+  test('[30] token is required to edit', async () => {
+    let res = await request(server).put('/api/items/23')
+    expect(res.body).toMatchObject({ message: "token required" })
   })
-
 
 })
 
 describe('[DELETE] /api/items/1', () => {
 
-  test('[30] able to delete item the market posted', async () => {
+  test('[31] able to delete item the market posted', async () => {
     let res = await request(server).post('/api/auth/login').send({ username: 'Test', password: '123' })
     res = await request(server).delete('/api/items/1').set('Authorization', res.body.token)
     expect(res.body).toMatchObject({ item_id: 1, item_name: "Beans - Butter Lrg Lima", item_description: "Nulla justo.", item_price: "10.38", market_id: 1 })
@@ -325,7 +328,7 @@ describe('[DELETE] /api/items/1', () => {
     expect(items).not.toBeDefined()
   })
 
-  test('[31] must be the market that posted the item to delete the item', async () => {
+  test('[32] must be the market that posted the item to delete the item', async () => {
     let res = await request(server).post('/api/auth/login').send({ username: 'Test', password: '123' })
     res = await request(server).delete('/api/items/23').set('Authorization', res.body.token)
     expect(res.body).toMatchObject({ message: "Item 23 can only be deleted by the market that posted Celery .", status: 404 })
@@ -334,7 +337,7 @@ describe('[DELETE] /api/items/1', () => {
     expect(items).toBeDefined()
   })
 
-  test('[32] token is required to delete', async () => {
+  test('[33] token is required to delete', async () => {
     let res = await request(server).delete('/api/items/23')
     expect(res.body).toMatchObject({ message: "token required" })
 
