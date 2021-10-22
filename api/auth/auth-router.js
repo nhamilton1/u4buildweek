@@ -32,6 +32,8 @@ async (req, res, next) => {
         const userMarketInfo = await User.findUserMarketId(req.user.user_id)
         res.status(200).json({
             message: `Welcome, ${req.user.username}, ID: ${req.user.user_id}, Market_Id: ${userMarketInfo.market_id}`,
+            user_id: req.user.user_id,
+            market_id: userMarketInfo.market_id,
             token
         })
     } else {
